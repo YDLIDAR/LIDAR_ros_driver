@@ -1,4 +1,4 @@
-###### *需先安装LIDAR_SDK  https://github.com/YDLIDAR/LIDAR_SDK
+###### *需先安装LIDAR_SDK
 
 ## 
 
