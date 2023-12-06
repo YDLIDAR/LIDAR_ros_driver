@@ -1,4 +1,4 @@
-###### *需先安装LIDAR_SDK [GitHub - pintztech/LIDAR_SDK](https://github.com/pintztech/LIDAR_SDK)
+###### *需先安装LIDAR_SDK      [GitHub - pintztech/LIDAR_SDK](https://github.com/pintztech/LIDAR_SDK)
 
 ## 
 
@@ -16,5 +16,3 @@ roslaunch lidar_ros_driver lidar.launch
 ```
 
 输出数据到/scan话题
-
-
