@@ -1,3 +1,7 @@
+###### *需先安装LIDAR_SDK [GitHub - pintztech/LIDAR_SDK](https://github.com/pintztech/LIDAR_SDK)
+
+## 
+
 ## 进入工程目录，编译
 
 ```
