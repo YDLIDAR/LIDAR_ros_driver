@@ -77,19 +77,23 @@ int main(int argc, char **argv) {
 
   //////////////////////float property/////////////////
   /// unit: °
-  float f_optvalue;
-
+  float f_optvalue, angle_max, angle_min, range_max, range_min;
+ 
   nh_private.param<float>("angle_max", f_optvalue, 330.f);
   cLidar.setlidaropt(LidarPropMaxAngle, &f_optvalue, sizeof(float));
+  angle_max = f_optvalue;
 
   nh_private.param<float>("angle_min", f_optvalue, 30.f);
   cLidar.setlidaropt(LidarPropMinAngle, &f_optvalue, sizeof(float));
+  angle_min = f_optvalue;
   /// unit: m
   nh_private.param<float>("range_max", f_optvalue, 64.f);
   cLidar.setlidaropt(LidarPropMaxRange, &f_optvalue, sizeof(float));
+  range_max = f_optvalue;
 
   nh_private.param<float>("range_min", f_optvalue, 0.01);
   cLidar.setlidaropt(LidarPropMinRange, &f_optvalue, sizeof(float));
+  range_min = f_optvalue;
 
   /// unit: Hz
   nh_private.param<float>("frequency", f_optvalue, 30.f);
@@ -126,7 +130,12 @@ int main(int argc, char **argv) {
       scan_msg.ranges.resize(scan.points.size());
       scan_msg.intensities.resize(scan.points.size());
       for(size_t i = 0; i < scan.points.size(); i++) {
-        scan_msg.ranges[i] = scan.points[i].range;
+        if(scan.points[i].angle < angle_min || scan.points[i].angle > angle_max 
+	  || scan.points[i].range < range_min || scan.points[i].range > range_max) {
+          scan_msg.ranges[i] = 0;
+        } else {
+          scan_msg.ranges[i] = scan.points[i].range;
+        }
         scan_msg.intensities[i] = scan.points[i].intensity;
       }
       scan_pub.publish(scan_msg);
