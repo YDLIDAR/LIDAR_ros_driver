@@ -126,17 +126,23 @@ int main(int argc, char **argv) {
       scan_msg.time_increment = scan.config.time_increment;//采样一个点所用的时间(秒)
       scan_msg.range_min = scan.config.min_range;
       scan_msg.range_max = scan.config.max_range;
+      int size = (scan.config.max_angle - scan.config.min_angle) /
+                 scan.config.angle_increment + 1;
 
-      scan_msg.ranges.resize(scan.points.size());
-      scan_msg.intensities.resize(scan.points.size());
+      scan_msg.ranges.resize(size);
+      scan_msg.intensities.resize(size);
+      ROS_ERROR("angle_increment:%f, max_angle:%f, min_angle:%f, min_angle:%f, origin_size: %d, size: %d", scan.config.angle_increment, scan.config.max_angle, scan.config.min_angle, scan.config.min_angle, scan.points.size(), size);
+      
       for(size_t i = 0; i < scan.points.size(); i++) {
-        if(scan.points[i].angle < angle_min || scan.points[i].angle > angle_max 
-	  || scan.points[i].range < range_min || scan.points[i].range > range_max) {
-          scan_msg.ranges[i] = 0;
-        } else {
-          scan_msg.ranges[i] = scan.points[i].range;
+        int index = std::ceil(((scan.points[i].angle - 180) / 180.f * M_PI - scan.config.min_angle) /
+                              scan.config.angle_increment);
+        ROS_ERROR("index: %d", index);
+        if (index >= 0 && index < size) {
+          if (scan.points[i].range >= scan.config.min_range && scan.points[i].range <= scan.config.max_range) {
+            scan_msg.ranges[index] = scan.points[i].range;
+            scan_msg.intensities[index] = scan.points[i].intensity;
+          }
         }
-        scan_msg.intensities[i] = scan.points[i].intensity;
       }
       scan_pub.publish(scan_msg);
     }
