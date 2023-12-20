@@ -9,8 +9,8 @@
     <param name="lidar_type"       type="int" value="0"/>  
 
     <!-- float property -->
-    <param name="angle_min"    type="double" value="30.0" />
-    <param name="angle_max"    type="double" value="330.0" />
+    <param name="angle_min"    type="double" value="-150.0" />
+    <param name="angle_max"    type="double" value="150.0" />
     <param name="range_min"    type="double" value="0.1" />
     <param name="range_max"    type="double" value="30.0" />
     <param name="frequency"    type="double" value="20.0"/>
