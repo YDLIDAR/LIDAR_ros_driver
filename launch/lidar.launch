@@ -1,20 +1,15 @@
 <launch>
   <node name="lidar_publisher"  pkg="lidar_ros_driver"  type="lidar_ros_driver_node" output="screen" respawn="false" >
-    <!-- string property -->
-    <param name="port"         type="string" value="192.168.0.11"/>  
     <param name="frame_id"     type="string" value="laser_frame"/>
-    <param name="baudrate"         type="int" value="8090"/>  
-
-    <!-- 0:TYPE_LIDAR -->
-    <param name="lidar_type"       type="int" value="0"/>  
-
-    <!-- float property -->
-    <param name="angle_min"    type="double" value="-150.0" />
-    <param name="angle_max"    type="double" value="150.0" />
+    <param name="ip"           type="string" value="192.168.0.11"/>  
+    <param name="port"         type="int" value="8090"/>  
+    <param name="lidar_type"   type="int" value="0"/>  
+    <param name="angle_min"    type="double" value="-90.0" />
+    <param name="angle_max"    type="double" value="90.0" />
     <param name="range_min"    type="double" value="0.1" />
-    <param name="range_max"    type="double" value="30.0" />
+    <param name="range_max"    type="double" value="25.0" />
     <param name="frequency"    type="double" value="20.0"/>
-    <param name="sample_rate"         type="int" value="40"/>
+    <param name="sample_rate"  type="int" value="40"/>
   </node>
 
   <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser4"

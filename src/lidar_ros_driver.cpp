@@ -59,13 +59,13 @@ int main(int argc, char **argv) {
   nh_private.param<std::string>("frame_id", frame_id, "laser_frame");
 
   std::string str_optvalue;
-  nh_private.param<std::string>("port", str_optvalue, "192.168.0.100");
+  nh_private.param<std::string>("ip", str_optvalue, "192.168.0.100");
   cLidar.setlidaropt(LidarPropSerialPort, str_optvalue.c_str(), str_optvalue.size());
 
   //////////////////////int property/////////////////
   int optval;
 
-  nh_private.param<int>("baudrate", optval, 8090);
+  nh_private.param<int>("port", optval, 8090);
   cLidar.setlidaropt(LidarPropSerialBaudrate, &optval, sizeof(int));
 
   nh_private.param<int>("lidar_type", optval, TYPE_LIDAR);
@@ -151,10 +151,10 @@ int main(int argc, char **argv) {
             scan_msg.intensities[index] = scan.points[i].intensity;
           }
         }
-        float curAngle = scan.points[i].angle / 180.f * M_PI - M_PI;
-        if (curAngle >= scan.config.min_angle && curAngle <= scan.config.max_angle
-            && scan.points[i].range >= scan.config.min_range && scan.points[i].range <= scan.config.max_range) {
-          geometry_msgs::Point32 point;
+	      float curAngle = scan.points[i].angle / 180.f * M_PI - M_PI;
+	      if (curAngle >= scan.config.min_angle && curAngle <= scan.config.max_angle
+	          && scan.points[i].range >= scan.config.min_range && scan.points[i].range <= scan.config.max_range) {
+	        geometry_msgs::Point32 point;
           point.x = scan.points[i].range * cos(curAngle);
           point.y = scan.points[i].range * sin(curAngle);
           point.z = 0.0;
