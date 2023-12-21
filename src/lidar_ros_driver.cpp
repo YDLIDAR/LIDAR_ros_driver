@@ -144,7 +144,8 @@ int main(int argc, char **argv) {
       pc_msg.channels[idx_timestamp].name = "stamps";
 
       for(size_t i = 0; i < scan.points.size(); i++) {
-        int index = std::ceil((scan.points[i].angle / 180.f * M_PI - M_PI - scan.config.min_angle) / scan.config.angle_increment);
+        int index = std::ceil((scan.points[i].angle / 180.f * M_PI - M_PI - scan.config.min_angle) 
+          / scan.config.angle_increment);
         if (index >= 0 && index < size) {
           if (scan.points[i].range >= scan.config.min_range && scan.points[i].range <= scan.config.max_range) {
             scan_msg.ranges[index] = scan.points[i].range;

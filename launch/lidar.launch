@@ -4,8 +4,8 @@
     <param name="ip"           type="string" value="192.168.0.11"/>  
     <param name="port"         type="int" value="8090"/>  
     <param name="lidar_type"   type="int" value="0"/>  
-    <param name="angle_min"    type="double" value="-90.0" />
-    <param name="angle_max"    type="double" value="90.0" />
+    <param name="angle_min"    type="double" value="-150.0" />
+    <param name="angle_max"    type="double" value="150.0" />
     <param name="range_min"    type="double" value="0.1" />
     <param name="range_max"    type="double" value="25.0" />
     <param name="frequency"    type="double" value="20.0"/>
