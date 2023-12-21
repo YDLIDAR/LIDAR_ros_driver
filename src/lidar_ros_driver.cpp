@@ -24,6 +24,7 @@
 
 #include <ros/ros.h>
 #include "sensor_msgs/LaserScan.h"
+#include "sensor_msgs/PointCloud.h"
 #include "std_srvs/Empty.h"
 #include "src/CLidar.h"
 
@@ -47,6 +48,7 @@ int main(int argc, char **argv) {
   ros::NodeHandle nh;
   ros::NodeHandle nh_private("~");
   ros::Publisher scan_pub = nh.advertise<sensor_msgs::LaserScan>("scan", 1);
+  ros::Publisher pc_pub = nh.advertise<sensor_msgs::PointCloud>("point_cloud", 1);
   ros::ServiceServer stop_scan_service = nh.advertiseService("stop_scan", stop_scan);
   ros::ServiceServer start_scan_service = nh.advertiseService("start_scan", start_scan);
   ROS_INFO("LIDAR ROS Driver Version: %s", SDKROSVerision);	
@@ -115,36 +117,54 @@ int main(int argc, char **argv) {
     if(cLidar.doProcessSimple(scan))
     {
       sensor_msgs::LaserScan scan_msg;
+      sensor_msgs::PointCloud pc_msg;
       ros::Time start_scan_time = ros::Time::now();
+
 
       scan_msg.header.stamp = start_scan_time;
       scan_msg.header.frame_id = frame_id;
+      pc_msg.header = scan_msg.header;
       scan_msg.angle_min = scan.config.min_angle;
       scan_msg.angle_max = scan.config.max_angle;
       scan.config.angle_increment = 300.0 / scan.points.size() / 180 * M_PI;
-      scan_msg.angle_increment = scan.config.angle_increment;//点与点之间的角度间隔
-      scan_msg.scan_time = scan.config.scan_time;//扫描一圈所用的时间(秒)
-      scan_msg.time_increment = scan.config.time_increment;//采样一个点所用的时间(秒)
+      scan_msg.angle_increment = scan.config.angle_increment;
+      scan_msg.scan_time = scan.config.scan_time;
+      scan_msg.time_increment = scan.config.time_increment;
       scan_msg.range_min = scan.config.min_range;
       scan_msg.range_max = scan.config.max_range;
       int size = (scan.config.max_angle - scan.config.min_angle) /
                  scan.config.angle_increment + 1;
-
       scan_msg.ranges.resize(size);
       scan_msg.intensities.resize(size);
-      int trueSize = 0;
+
+      pc_msg.channels.resize(2);
+      int idx_intensity = 0;
+      pc_msg.channels[idx_intensity].name = "intensities";
+      int idx_timestamp = 1;
+      pc_msg.channels[idx_timestamp].name = "stamps";
+
       for(size_t i = 0; i < scan.points.size(); i++) {
-        int index = std::ceil(((scan.points[i].angle - 180) / 180.f * M_PI - scan.config.min_angle) /
-                              scan.config.angle_increment);
+        int index = std::ceil((scan.points[i].angle / 180.f * M_PI - M_PI - scan.config.min_angle) / scan.config.angle_increment);
         if (index >= 0 && index < size) {
           if (scan.points[i].range >= scan.config.min_range && scan.points[i].range <= scan.config.max_range) {
-            trueSize++;
             scan_msg.ranges[index] = scan.points[i].range;
             scan_msg.intensities[index] = scan.points[i].intensity;
           }
         }
+        float curAngle = scan.points[i].angle / 180.f * M_PI - M_PI;
+        if (curAngle >= scan.config.min_angle && curAngle <= scan.config.max_angle
+            && scan.points[i].range >= scan.config.min_range && scan.points[i].range <= scan.config.max_range) {
+          geometry_msgs::Point32 point;
+          point.x = scan.points[i].range * cos(curAngle);
+          point.y = scan.points[i].range * sin(curAngle);
+          point.z = 0.0;
+          pc_msg.points.push_back(point);
+          pc_msg.channels[idx_intensity].values.push_back(scan.points[i].intensity);
+          pc_msg.channels[idx_timestamp].values.push_back(i * scan.config.time_increment);
+	      }
       }
       scan_pub.publish(scan_msg);
+      pc_pub.publish(pc_msg);
     }
     else {
       ROS_ERROR("Failed to get Lidar Data");
