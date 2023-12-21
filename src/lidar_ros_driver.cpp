@@ -121,6 +121,7 @@ int main(int argc, char **argv) {
       scan_msg.header.frame_id = frame_id;
       scan_msg.angle_min = scan.config.min_angle;
       scan_msg.angle_max = scan.config.max_angle;
+      scan.config.angle_increment = 330.0 / scan.points.size() / 180 * M_PI;
       scan_msg.angle_increment = scan.config.angle_increment;//点与点之间的角度间隔
       scan_msg.scan_time = scan.config.scan_time;//扫描一圈所用的时间(秒)
       scan_msg.time_increment = scan.config.time_increment;//采样一个点所用的时间(秒)
@@ -131,14 +132,13 @@ int main(int argc, char **argv) {
 
       scan_msg.ranges.resize(size);
       scan_msg.intensities.resize(size);
-      ROS_ERROR("angle_increment:%f, max_angle:%f, min_angle:%f, min_angle:%f, origin_size: %d, size: %d", scan.config.angle_increment, scan.config.max_angle, scan.config.min_angle, scan.config.min_angle, scan.points.size(), size);
-      
+      int trueSize = 0;
       for(size_t i = 0; i < scan.points.size(); i++) {
         int index = std::ceil(((scan.points[i].angle - 180) / 180.f * M_PI - scan.config.min_angle) /
                               scan.config.angle_increment);
-        ROS_ERROR("index: %d", index);
         if (index >= 0 && index < size) {
           if (scan.points[i].range >= scan.config.min_range && scan.points[i].range <= scan.config.max_range) {
+            trueSize++;
             scan_msg.ranges[index] = scan.points[i].range;
             scan_msg.intensities[index] = scan.points[i].intensity;
           }
