@@ -121,7 +121,7 @@ int main(int argc, char **argv) {
       scan_msg.header.frame_id = frame_id;
       scan_msg.angle_min = scan.config.min_angle;
       scan_msg.angle_max = scan.config.max_angle;
-      scan.config.angle_increment = 330.0 / scan.points.size() / 180 * M_PI;
+      scan.config.angle_increment = 300.0 / scan.points.size() / 180 * M_PI;
       scan_msg.angle_increment = scan.config.angle_increment;//点与点之间的角度间隔
       scan_msg.scan_time = scan.config.scan_time;//扫描一圈所用的时间(秒)
       scan_msg.time_increment = scan.config.time_increment;//采样一个点所用的时间(秒)
