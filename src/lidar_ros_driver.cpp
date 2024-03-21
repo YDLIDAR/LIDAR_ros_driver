@@ -103,6 +103,9 @@ int main(int argc, char **argv) {
  
   nh_private.param<int>("sample_rate", optval, 20);
   cLidar.setlidaropt(LidarPropSampleRate, &optval, sizeof(int));
+
+  nh_private.param<bool>("reversion", b_optvalue, false);
+  cLidar.setlidaropt(LidarPropReversion, &b_optvalue, sizeof(bool));
  
   // initialize SDK and LiDAR
   bool ret = cLidar.initialize();
