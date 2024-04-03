@@ -9,8 +9,8 @@
     <param name="range_min"    type="double" value="0.1" />
     <param name="range_max"    type="double" value="30.0" />
     <param name="frequency"    type="double" value="20.0"/>
-    <param name="sample_rate"  type="int"    value="20"/>
-    <param name="reversion"    type="bool"   value="false"/>
+    <param name="sample_rate"  type="int"    value="34"/>
+    <param name="reversion"    type="bool"   value="true"/>
   </node>
 
   <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser4"
